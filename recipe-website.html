@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bite-Sized — Recipes Anyone Can Cook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFF8EC;
+    --tomato:#FF5A3C;
+    --tomato-dark:#E8441F;
+    --turmeric:#FFC542;
+    --basil:#4B7A4F;
+    --basil-dark:#365938;
+    --plum:#2E2233;
+    --butter:#FFE9B8;
+    --paper:#FFFFFF;
+    --line: rgba(46,34,51,0.12);
+    --shadow: 0 8px 24px rgba(46,34,51,0.10);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--plum);
+    font-family:'Nunito', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    letter-spacing:-0.01em;
+  }
+  a{color:inherit;}
+  img,svg{display:block;}
+
+  /* ---------- Background doodles ---------- */
+  .doodle{position:absolute; opacity:0.9; pointer-events:none;}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px clamp(20px,5vw,64px);
+    position:sticky; top:0; z-index:50;
+    background:rgba(255,248,236,0.88);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .logo{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Fraunces', serif; font-weight:700; font-size:22px;
+  }
+  .logo .mark{
+    width:36px;height:36px; border-radius:50%;
+    background:var(--tomato);
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px; transform:rotate(-8deg);
+    box-shadow: 0 3px 0 var(--tomato-dark);
+  }
+  .nav-links{display:flex; gap:28px; font-weight:700; font-size:15px;}
+  .nav-links a{text-decoration:none; opacity:0.8; transition:opacity .15s;}
+  .nav-links a:hover{opacity:1;}
+  .btn{
+    border:none; cursor:pointer; font-family:'Nunito',sans-serif; font-weight:800;
+    border-radius:100px; padding:12px 22px; font-size:15px;
+    display:inline-flex; align-items:center; gap:8px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:active{transform:translateY(2px);}
+  .btn-primary{
+    background:var(--tomato); color:#fff;
+    box-shadow:0 4px 0 var(--tomato-dark);
+  }
+  .btn-primary:hover{transform:translateY(-1px);}
+  .btn-primary:active{box-shadow:0 1px 0 var(--tomato-dark); transform:translateY(3px);}
+  .btn-ghost{
+    background:transparent; color:var(--plum); border:2px solid var(--plum);
+  }
+  .btn-ghost:hover{background:var(--plum); color:var(--cream);}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;
+    padding:64px clamp(20px,5vw,64px) 40px;
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:40px;
+    align-items:center;
+    overflow:hidden;
+  }
+  .hero-eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--butter); color:var(--basil-dark);
+    font-weight:800; font-size:13px; letter-spacing:0.04em;
+    padding:8px 14px; border-radius:100px; margin-bottom:18px;
+    text-transform:uppercase;
+  }
+  .hero h1{
+    font-size:clamp(38px, 5.2vw, 66px);
+    line-height:1.02;
+    margin:0 0 20px;
+    font-weight:700;
+  }
+  .hero h1 em{
+    font-style:italic; color:var(--tomato); font-weight:500;
+  }
+  .hero p{
+    font-size:19px; line-height:1.55; max-width:520px; opacity:0.85; margin:0 0 28px;
+  }
+  .hero-actions{display:flex; gap:14px; flex-wrap:wrap;}
+  .hero-art{
+    position:relative; aspect-ratio:1/1; max-width:440px; justify-self:center;
+  }
+  .plate{
+    position:absolute; inset:0; border-radius:50%;
+    background:var(--paper);
+    box-shadow: 0 20px 50px rgba(46,34,51,0.18);
+    display:flex; align-items:center; justify-content:center;
+    font-size:130px;
+    animation:spin-plate 22s linear infinite;
+  }
+  @keyframes spin-plate{ from{transform:rotate(0)} to{transform:rotate(360deg)} }
+  .plate span{ display:inline-block; animation:counter-spin 22s linear infinite; }
+  @keyframes counter-spin{ from{transform:rotate(0)} to{transform:rotate(-360deg)} }
+  .plate::before{
+    content:''; position:absolute; inset:14%;
+    border-radius:50%; border:3px dashed var(--turmeric);
+  }
+  .crumb{position:absolute; font-size:34px;}
+  .crumb.c1{top:0; left:6%; animation:float 6s ease-in-out infinite;}
+  .crumb.c2{bottom:6%; right:0; animation:float 7s ease-in-out infinite 1s;}
+  .crumb.c3{bottom:-2%; left:-4%; animation:float 5s ease-in-out infinite .5s;}
+  .crumb.c4{top:4%; right:-6%; animation:float 6.5s ease-in-out infinite 1.5s;}
+  @keyframes float{ 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-14px) rotate(8deg)} }
+
+  .stat-strip{
+    display:flex; gap:40px; padding:0 clamp(20px,5vw,64px) 48px;
+    flex-wrap:wrap; border-bottom:1px solid var(--line);
+  }
+  .stat-strip div{min-width:120px;}
+  .stat-num{font-family:'Fraunces',serif; font-size:34px; font-weight:700; color:var(--tomato);}
+  .stat-label{font-size:13px; font-weight:700; opacity:0.65; text-transform:uppercase; letter-spacing:0.03em;}
+
+  /* ---------- Controls ---------- */
+  .section{padding:56px clamp(20px,5vw,64px);}
+  .section-head{display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:28px;}
+  .section-head h2{font-size:clamp(28px,3.4vw,40px); margin:0;}
+  .section-head p{margin:6px 0 0; opacity:0.7; font-size:15px;}
+
+  .controls{
+    display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-bottom:28px;
+  }
+  .search-box{
+    flex:1; min-width:220px; position:relative;
+  }
+  .search-box input{
+    width:100%; padding:14px 20px 14px 46px; border-radius:100px;
+    border:2px solid var(--line); background:var(--paper);
+    font-family:'Nunito',sans-serif; font-size:15px; font-weight:600;
+    color:var(--plum); outline:none; transition:border-color .15s;
+  }
+  .search-box input:focus{border-color:var(--tomato);}
+  .search-box::before{
+    content:'🔎'; position:absolute; left:18px; top:50%; transform:translateY(-50%); font-size:15px;
+  }
+  .chip{
+    border:2px solid var(--line); background:var(--paper); color:var(--plum);
+    padding:10px 18px; border-radius:100px; font-weight:800; font-size:14px;
+    cursor:pointer; transition:all .15s; white-space:nowrap;
+  }
+  .chip:hover{border-color:var(--tomato);}
+  .chip.active{background:var(--plum); color:var(--cream); border-color:var(--plum);}
+  .chip-row{display:flex; gap:10px; flex-wrap:wrap;}
+
+  /* ---------- Recipe grid ---------- */
+  .grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(270px, 1fr)); gap:24px;
+  }
+  .card{
+    background:var(--paper); border-radius:22px; overflow:hidden;
+    box-shadow:var(--shadow); cursor:pointer;
+    border:1px solid var(--line);
+    transition:transform .18s ease, box-shadow .18s ease;
+    display:flex; flex-direction:column;
+  }
+  .card:hover{transform:translateY(-6px); box-shadow:0 16px 34px rgba(46,34,51,0.16);}
+  .card-media{
+    height:150px; display:flex; align-items:center; justify-content:center;
+    font-size:64px; position:relative;
+  }
+  .card-tag{
+    position:absolute; top:12px; left:12px;
+    background:rgba(255,255,255,0.9); font-weight:800; font-size:11.5px;
+    text-transform:uppercase; letter-spacing:0.03em;
+    padding:5px 10px; border-radius:100px; color:var(--plum);
+  }
+  .card-diff{
+    position:absolute; top:12px; right:12px;
+    font-size:11.5px; font-weight:800; padding:5px 10px; border-radius:100px;
+    color:#fff;
+  }
+  .card-body{padding:18px 20px 20px; display:flex; flex-direction:column; gap:8px; flex:1;}
+  .card-body h3{margin:0; font-size:19px; line-height:1.2;}
+  .card-meta{display:flex; gap:14px; font-size:13px; font-weight:700; opacity:0.65;}
+  .card-desc{font-size:14px; opacity:0.75; line-height:1.4; margin:0; flex:1;}
+  .card-foot{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:6px; font-size:13px; font-weight:800; color:var(--tomato);
+  }
+
+  .empty-state{
+    text-align:center; padding:60px 20px; opacity:0.7;
+  }
+  .empty-state .em{font-size:48px; margin-bottom:10px;}
+
+  /* ---------- Add recipe section ---------- */
+  .add-panel{
+    background:var(--plum); color:var(--cream); border-radius:28px;
+    padding:clamp(28px,4vw,48px); display:grid; grid-template-columns:1fr 1fr; gap:36px;
+    align-items:center;
+  }
+  .add-panel h2{color:var(--cream); margin:0 0 12px;}
+  .add-panel p{opacity:0.75; line-height:1.55; margin:0 0 20px;}
+  .form-grid{display:flex; flex-direction:column; gap:12px;}
+  .form-grid input, .form-grid select, .form-grid textarea{
+    width:100%; padding:13px 16px; border-radius:14px; border:none;
+    font-family:'Nunito',sans-serif; font-size:14px; font-weight:600;
+    background:rgba(255,248,236,0.1); color:var(--cream); outline:none;
+    border:2px solid rgba(255,248,236,0.18);
+  }
+  .form-grid input::placeholder, .form-grid textarea::placeholder{color:rgba(255,248,236,0.5);}
+  .form-grid input:focus, .form-grid select:focus, .form-grid textarea:focus{border-color:var(--turmeric);}
+  .form-grid textarea{resize:vertical; min-height:80px; font-family:'Nunito',sans-serif;}
+  .form-row{display:flex; gap:12px;}
+  .form-grid select option{color:#000;}
+  .form-hint{font-size:12px; opacity:0.6; margin-top:-4px;}
+
+  /* ---------- Footer ---------- */
+  footer{
+    padding:36px clamp(20px,5vw,64px); border-top:1px solid var(--line);
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+    font-size:13px; opacity:0.65; font-weight:700;
+  }
+
+  /* ---------- Modal ---------- */
+  .overlay{
+    position:fixed; inset:0; background:rgba(46,34,51,0.55);
+    display:none; align-items:center; justify-content:center; z-index:100;
+    padding:24px; backdrop-filter:blur(2px);
+  }
+  .overlay.open{display:flex;}
+  .modal{
+    background:var(--cream); width:min(760px, 100%); max-height:88vh; overflow-y:auto;
+    border-radius:26px; position:relative; box-shadow:0 30px 60px rgba(0,0,0,0.3);
+  }
+  .modal-hero{
+    height:180px; display:flex; align-items:center; justify-content:center; font-size:88px;
+    position:relative;
+  }
+  .modal-close{
+    position:absolute; top:16px; right:16px; width:38px; height:38px; border-radius:50%;
+    background:rgba(255,255,255,0.85); border:none; font-size:18px; cursor:pointer; font-weight:800;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .modal-body{padding:28px clamp(20px,4vw,40px) 36px;}
+  .modal-body h2{margin:0 0 8px; font-size:30px;}
+  .modal-meta{display:flex; gap:18px; flex-wrap:wrap; font-size:14px; font-weight:800; opacity:0.7; margin-bottom:18px;}
+  .modal-meta span{display:flex; align-items:center; gap:6px;}
+  .modal-desc{font-size:15px; line-height:1.6; opacity:0.85; margin-bottom:26px;}
+  .modal-tabs{display:flex; gap:10px; margin-bottom:20px;}
+  .tab-btn{
+    border:2px solid var(--line); background:var(--paper); padding:9px 18px; border-radius:100px;
+    font-weight:800; font-size:13.5px; cursor:pointer;
+  }
+  .tab-btn.active{background:var(--basil); border-color:var(--basil); color:#fff;}
+  .ing-list{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px;}
+  .ing-list li{
+    display:flex; align-items:center; gap:12px; padding:12px 14px; background:var(--paper);
+    border-radius:14px; border:1px solid var(--line); font-weight:700; font-size:14.5px;
+  }
+  .ing-list li.checked{opacity:0.4; text-decoration:line-through;}
+  .ing-list input{width:18px; height:18px; accent-color:var(--tomato); cursor:pointer;}
+  .step-list{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:14px;}
+  .step-list li{
+    display:flex; gap:14px; padding:16px; background:var(--paper); border-radius:16px; border:1px solid var(--line);
+  }
+  .step-num{
+    flex-shrink:0; width:32px; height:32px; border-radius:50%; background:var(--turmeric);
+    display:flex; align-items:center; justify-content:center; font-weight:900; font-size:14px;
+  }
+  .step-text{font-size:14.5px; line-height:1.5; font-weight:600;}
+  .modal-actions{display:flex; gap:12px; margin-top:26px; flex-wrap:wrap;}
+
+  /* Cook mode */
+  .cook-overlay{
+    position:fixed; inset:0; background:var(--plum); z-index:200; display:none;
+    flex-direction:column; color:var(--cream);
+  }
+  .cook-overlay.open{display:flex;}
+  .cook-top{display:flex; justify-content:space-between; align-items:center; padding:20px 26px;}
+  .cook-progress{flex:1; height:8px; background:rgba(255,255,255,0.15); border-radius:100px; margin:0 20px; overflow:hidden;}
+  .cook-progress-bar{height:100%; background:var(--turmeric); width:0%; transition:width .3s;}
+  .cook-close{background:none; border:none; color:var(--cream); font-size:22px; cursor:pointer;}
+  .cook-body{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:20px 24px; gap:20px;
+  }
+  .cook-step-num{font-family:'Fraunces',serif; font-size:20px; color:var(--turmeric); font-weight:700;}
+  .cook-step-text{font-size:clamp(22px,4vw,34px); max-width:720px; line-height:1.35; font-weight:600;}
+  .cook-nav{display:flex; gap:16px; padding:26px; justify-content:center;}
+  .cook-btn{
+    border:none; padding:16px 30px; border-radius:100px; font-weight:800; font-size:15px; cursor:pointer;
+  }
+  .cook-btn.prev{background:rgba(255,255,255,0.12); color:var(--cream);}
+  .cook-btn.next{background:var(--tomato); color:#fff;}
+  .cook-btn:disabled{opacity:0.3; cursor:not-allowed;}
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--plum); color:var(--cream); padding:14px 24px; border-radius:100px;
+    font-weight:800; font-size:14px; z-index:300; opacity:0; transition:all .25s; pointer-events:none;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  @media (max-width:840px){
+    .hero{grid-template-columns:1fr; padding-top:36px;}
+    .hero-art{order:-1; max-width:280px;}
+    .add-panel{grid-template-columns:1fr;}
+    .nav-links{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo"><span class="mark">🍳</span> Bite-Sized</div>
+  <div class="nav-links">
+    <a href="#recipes">Recipes</a>
+    <a href="#share">Share a recipe</a>
+  </div>
+  <button class="btn btn-primary" onclick="document.getElementById('share').scrollIntoView()">🧑‍🍳 Add your recipe</button>
+</div>
+
+<section class="hero">
+  <div>
+    <div class="hero-eyebrow">🎉 100% free, forever</div>
+    <h1>Cook something<br><em>delicious</em> tonight —<br>no stress attached.</h1>
+    <p>Bite-Sized is a free, open kitchen table for chefs of every skill level. Browse recipes, download them for offline cooking, or follow along with our giant-text Cook Mode so you never lose your place mid-stir.</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" onclick="document.getElementById('recipes').scrollIntoView()">🍽️ Browse recipes</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('share').scrollIntoView()">Share your own</button>
+    </div>
+  </div>
+  <div class="hero-art">
+    <div class="plate"><span>🍝</span></div>
+    <div class="crumb c1">🌶️</div>
+    <div class="crumb c2">🍋</div>
+    <div class="crumb c3">🧄</div>
+    <div class="crumb c4">🌿</div>
+  </div>
+</section>
+
+<div class="stat-strip">
+  <div><div class="stat-num" id="statCount">0</div><div class="stat-label">Recipes</div></div>
+  <div><div class="stat-num">0</div><div class="stat-label">Sign-ups needed</div></div>
+  <div><div class="stat-num">1</div><div class="stat-label">Tap to cook mode</div></div>
+  <div><div class="stat-num">∞</div><div class="stat-label">Times you can cook it</div></div>
+</div>
+
+<section class="section" id="recipes">
+  <div class="section-head">
+    <div>
+      <h2>Find your next meal</h2>
+      <p>Search, filter, then download or cook straight from the page.</p>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="search-box"><input id="searchInput" type="text" placeholder="Search recipes, ingredients, chefs..."></div>
+  </div>
+  <div class="chip-row" id="categoryChips"></div>
+  <br>
+  <div class="grid" id="recipeGrid"></div>
+  <div class="empty-state" id="emptyState" style="display:none;">
+    <div class="em">🍽️</div>
+    <div>No recipes match that search. Try a different word, or add your own below!</div>
+  </div>
+</section>
+
+<section class="section" id="share">
+  <div class="add-panel">
+    <div>
+      <h2>Are you a chef?<br>Share your recipe.</h2>
+      <p>Add your dish to Bite-Sized in under a minute. It'll appear in the grid instantly for everyone browsing this session, ready to be searched, downloaded, and cooked.</p>
+      <p class="form-hint">🔒 No account, no paywall — this is a free community kitchen.</p>
+    </div>
+    <form class="form-grid" id="recipeForm" onsubmit="return addRecipe(event)">
+      <input type="text" id="f-title" placeholder="Recipe name (e.g. Grandma's Lemon Cake)" required>
+      <div class="form-row">
+        <input type="text" id="f-author" placeholder="Your name" required>
+        <select id="f-category" required>
+          <option value="">Category</option>
+          <option>Breakfast</option>
+          <option>Main</option>
+          <option>Dessert</option>
+          <option>Snack</option>
+          <option>Drink</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <input type="text" id="f-time" placeholder="Time (e.g. 25 min)" required>
+        <select id="f-diff" required>
+          <option value="">Difficulty</option>
+          <option>Easy</option>
+          <option>Medium</option>
+          <option>Hard</option>
+        </select>
+      </div>
+      <textarea id="f-desc" placeholder="One-line description" required></textarea>
+      <textarea id="f-ingredients" placeholder="Ingredients — one per line" required></textarea>
+      <textarea id="f-steps" placeholder="Steps — one per line" required></textarea>
+      <button class="btn btn-primary" type="submit" style="justify-content:center;">✨ Add my recipe</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div>🍳 Bite-Sized — a free recipe table, made for sharing.</div>
+  <div>Every download is yours to keep, print, and mess up with sauce stains.</div>
+</footer>
+
+<!-- Recipe detail modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-hero" id="modalHero">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <h2 id="modalTitle"></h2>
+      <div class="modal-meta">
+        <span id="modalTime">⏱ —</span>
+        <span id="modalDiff">📊 —</span>
+        <span id="modalAuthor">🧑‍🍳 —</span>
+      </div>
+      <p class="modal-desc" id="modalDesc"></p>
+      <div class="modal-tabs">
+        <button class="tab-btn active" data-tab="ing" onclick="switchTab('ing')">Ingredients</button>
+        <button class="tab-btn" data-tab="steps" onclick="switchTab('steps')">Steps</button>
+      </div>
+      <ul class="ing-list" id="modalIngredients"></ul>
+      <ol class="step-list" id="modalSteps" style="display:none;"></ol>
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="startCookMode()">👩‍🍳 Start Cook Mode</button>
+        <button class="btn btn-ghost" onclick="downloadRecipe()">⬇️ Download recipe</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cook mode -->
+<div class="cook-overlay" id="cookOverlay">
+  <div class="cook-top">
+    <strong id="cookTitle" style="font-family:'Fraunces',serif;"></strong>
+    <div class="cook-progress"><div class="cook-progress-bar" id="cookProgressBar"></div></div>
+    <button class="cook-close" onclick="closeCookMode()">✕</button>
+  </div>
+  <div class="cook-body">
+    <div class="cook-step-num" id="cookStepNum"></div>
+    <div class="cook-step-text" id="cookStepText"></div>
+  </div>
+  <div class="cook-nav">
+    <button class="cook-btn prev" id="cookPrev" onclick="cookNav(-1)">← Previous</button>
+    <button class="cook-btn next" id="cookNext" onclick="cookNav(1)">Next →</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CATEGORY_COLORS = {
+  Breakfast: '#FFC542',
+  Main: '#FF5A3C',
+  Dessert: '#E4739A',
+  Snack: '#4B7A4F',
+  Drink: '#4E9BD6'
+};
+const DIFF_COLORS = { Easy:'#4B7A4F', Medium:'#FFC542', Hard:'#FF5A3C' };
+
+let recipes = [
+  {
+    title:"5-Minute Avocado Toast", author:"Chef Amina", category:"Breakfast", emoji:"🥑",
+    time:"5 min", servings:"1", difficulty:"Easy",
+    desc:"The fastest good decision you'll make before 8am.",
+    ingredients:["1 ripe avocado","2 slices sourdough bread","1/2 lemon, juiced","Pinch of chili flakes","Salt & pepper to taste","Olive oil, for drizzling"],
+    steps:["Toast the sourdough slices until golden and crisp.","Scoop the avocado into a bowl and mash with a fork.","Mix in lemon juice, salt, and pepper.","Spread the mashed avocado generously over the toast.","Top with chili flakes and a drizzle of olive oil.","Serve immediately while the toast is still warm."]
+  },
+  {
+    title:"One-Pot Creamy Tomato Pasta", author:"Chef Diego", category:"Main", emoji:"🍝",
+    time:"25 min", servings:"4", difficulty:"Easy",
+    desc:"One pot, minimal cleanup, maximum comfort.",
+    ingredients:["400g pasta of choice","1 can crushed tomatoes","3 cloves garlic, minced","1 onion, diced","1 cup vegetable stock","1/2 cup heavy cream","2 tbsp olive oil","Fresh basil, torn","Parmesan, to serve"],
+    steps:["Heat olive oil in a large pot and sauté onion until soft.","Add garlic and cook for 1 minute until fragrant.","Pour in crushed tomatoes and vegetable stock, then bring to a simmer.","Add dry pasta directly into the pot and stir.","Cover and cook, stirring occasionally, until pasta is tender.","Stir in the cream and cook for 2 more minutes.","Top with torn basil and parmesan before serving."]
+  },
+  {
+    title:"Spicy Chickpea Buddha Bowl", author:"Chef Wanjiru", category:"Main", emoji:"🥗",
+    time:"30 min", servings:"2", difficulty:"Medium",
+    desc:"Crunchy, spicy, and packed with plants.",
+    ingredients:["1 can chickpeas, drained","2 cups cooked rice","1 cup baby spinach","1 carrot, shredded","1/2 cucumber, sliced","2 tbsp tahini","1 tbsp hot sauce","1 tsp cumin","1 tsp paprika","Olive oil, salt"],
+    steps:["Toss chickpeas with cumin, paprika, olive oil, and salt.","Roast chickpeas at 200°C for 18-20 minutes until crisp.","Whisk tahini with hot sauce and a splash of water to make dressing.","Assemble bowls with rice, spinach, carrot, and cucumber.","Top with roasted chickpeas.","Drizzle generously with tahini-hot sauce dressing."]
+  },
+  {
+    title:"Classic Banana Pancakes", author:"Chef Marco", category:"Breakfast", emoji:"🥞",
+    time:"20 min", servings:"3", difficulty:"Easy",
+    desc:"Fluffy stacks that make mornings feel like a reward.",
+    ingredients:["1.5 cups flour","2 ripe bananas, mashed","2 eggs","1 cup milk","2 tbsp sugar","1 tbsp baking powder","Pinch of salt","Butter, for cooking"],
+    steps:["Whisk together flour, sugar, baking powder, and salt in a bowl.","In another bowl, mix mashed banana, eggs, and milk.","Combine wet and dry ingredients until just mixed — a few lumps are fine.","Heat butter in a pan over medium heat.","Pour 1/4 cup batter per pancake and cook until bubbles form.","Flip and cook until golden on both sides.","Serve warm with extra banana slices or syrup."]
+  },
+  {
+    title:"No-Bake Chocolate Oat Bites", author:"Chef Lila", category:"Dessert", emoji:"🍫",
+    time:"15 min", servings:"12 bites", difficulty:"Easy",
+    desc:"No oven, no drama, just chocolatey energy bites.",
+    ingredients:["1 cup rolled oats","1/2 cup peanut butter","1/3 cup honey","1/4 cup cocoa powder","1/4 cup mini chocolate chips","1 tsp vanilla extract"],
+    steps:["Mix oats, peanut butter, honey, cocoa, and vanilla in a bowl until combined.","Fold in the chocolate chips.","Chill the mixture in the fridge for 10 minutes to firm up.","Roll into small bite-sized balls.","Store in the fridge in an airtight container."]
+  },
+  {
+    title:"Garlic Butter Steak Bites", author:"Chef Omondi", category:"Main", emoji:"🥩",
+    time:"20 min", servings:"3", difficulty:"Medium",
+    desc:"Restaurant-level flavor in one hot pan.",
+    ingredients:["500g sirloin steak, cubed","4 tbsp butter","5 cloves garlic, minced","1 tbsp fresh thyme","Salt and pepper","1 tbsp oil"],
+    steps:["Season steak cubes generously with salt and pepper.","Heat oil in a skillet over high heat until smoking.","Sear steak bites for 1-2 minutes per side, then remove from pan.","Lower heat, melt butter, and add garlic and thyme.","Return steak to the pan and toss in the garlic butter for 1 minute.","Serve immediately while sizzling."]
+  },
+  {
+    title:"Mango Coconut Smoothie", author:"Chef Amina", category:"Drink", emoji:"🥭",
+    time:"5 min", servings:"2", difficulty:"Easy",
+    desc:"Tastes like a beach vacation in a glass.",
+    ingredients:["2 cups frozen mango chunks","1 cup coconut milk","1/2 cup yogurt","1 tbsp honey","Ice, as needed"],
+    steps:["Add mango, coconut milk, yogurt, and honey to a blender.","Blend until completely smooth.","Add ice and blend again to desired thickness.","Pour into glasses and serve immediately."]
+  },
+  {
+    title:"Crispy Baked Falafel", author:"Chef Yusuf", category:"Snack", emoji:"🧆",
+    time:"40 min", servings:"4", difficulty:"Medium",
+    desc:"All the crunch, none of the deep-frying mess.",
+    ingredients:["2 cups dried chickpeas, soaked overnight","1 onion, chopped","4 cloves garlic","1 cup parsley","1 cup cilantro","1 tsp cumin","1 tsp coriander","1 tsp baking powder","Salt and pepper","2 tbsp olive oil"],
+    steps:["Drain soaked chickpeas and pat dry.","Pulse chickpeas, onion, garlic, herbs, and spices in a food processor until coarsely combined.","Mix in baking powder and season with salt and pepper.","Shape mixture into small patties or balls.","Brush generously with olive oil and place on a lined baking sheet.","Bake at 200°C for 25-30 minutes, flipping halfway, until golden and crisp."]
+  },
+  {
+    title:"Ultimate Fudgy Brownies", author:"Chef Diego", category:"Dessert", emoji:"🍰",
+    time:"45 min", servings:"9", difficulty:"Easy",
+    desc:"Crackly top, gooey middle, gone within a day.",
+    ingredients:["200g dark chocolate, chopped","150g butter","1 cup sugar","3 eggs","1 tsp vanilla extract","3/4 cup flour","1/4 cup cocoa powder","Pinch of salt"],
+    steps:["Preheat oven to 175°C and line a square baking pan.","Melt chocolate and butter together until smooth.","Whisk in sugar, then eggs one at a time, then vanilla.","Fold in flour, cocoa powder, and salt until just combined.","Pour batter into the pan and spread evenly.","Bake for 25-28 minutes until a slightly wet crumb clings to a toothpick.","Cool completely before slicing into squares."]
+  }
+];
+
+let activeCategory = 'All';
+let searchTerm = '';
+let currentRecipe = null;
+let cookIndex = 0;
+
+function categories(){
+  const set = new Set(recipes.map(r=>r.category));
+  return ['All', ...Array.from(set)];
+}
+
+function renderChips(){
+  const wrap = document.getElementById('categoryChips');
+  wrap.innerHTML = '';
+  categories().forEach(cat=>{
+    const chip = document.createElement('button');
+    chip.className = 'chip' + (cat===activeCategory ? ' active' : '');
+    chip.textContent = cat;
+    chip.onclick = ()=>{ activeCategory = cat; renderChips(); renderGrid(); };
+    wrap.appendChild(chip);
+  });
+}
+
+function matchesSearch(r, term){
+  if(!term) return true;
+  const hay = (r.title + ' ' + r.desc + ' ' + r.author + ' ' + r.ingredients.join(' ')).toLowerCase();
+  return hay.includes(term.toLowerCase());
+}
+
+function renderGrid(){
+  const grid = document.getElementById('recipeGrid');
+  const empty = document.getElementById('emptyState');
+  grid.innerHTML = '';
+  const filtered = recipes.filter(r =>
+    (activeCategory === 'All' || r.category === activeCategory) && matchesSearch(r, searchTerm)
+  );
+  document.getElementById('statCount').textContent = recipes.length;
+  if(filtered.length === 0){
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+  }
+  filtered.forEach((r, idx)=>{
+    const realIdx = recipes.indexOf(r);
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.onclick = ()=> openModal(realIdx);
+    const catColor = CATEGORY_COLORS[r.category] || '#999';
+    const diffColor = DIFF_COLORS[r.difficulty] || '#999';
+    card.innerHTML = `
+      <div class="card-media" style="background:${catColor}33;">
+        <div class="card-tag">${r.category}</div>
+        <div class="card-diff" style="background:${diffColor};">${r.difficulty}</div>
+        ${r.emoji}
+      </div>
+      <div class="card-body">
+        <h3>${r.title}</h3>
+        <div class="card-meta"><span>⏱ ${r.time}</span><span>🍽 ${r.servings}</span></div>
+        <p class="card-desc">${r.desc}</p>
+        <div class="card-foot"><span>by ${r.author}</span><span>View recipe →</span></div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+document.getElementById('searchInput').addEventListener('input', (e)=>{
+  searchTerm = e.target.value;
+  renderGrid();
+});
+
+function openModal(idx){
+  currentRecipe = idx;
+  const r = recipes[idx];
+  document.getElementById('modalHero').style.background = (CATEGORY_COLORS[r.category]||'#ccc') + '33';
+  document.getElementById('modalHero').innerHTML = `<button class="modal-close" onclick="closeModal()">✕</button>${r.emoji}`;
+  document.getElementById('modalTitle').textContent = r.title;
+  document.getElementById('modalTime').textContent = `⏱ ${r.time}`;
+  document.getElementById('modalDiff').textContent = `📊 ${r.difficulty}`;
+  document.getElementById('modalAuthor').textContent = `🧑‍🍳 ${r.author}`;
+  document.getElementById('modalDesc').textContent = r.desc;
+  const ingList = document.getElementById('modalIngredients');
+  ingList.innerHTML = '';
+  r.ingredients.forEach((ing,i)=>{
+    const li = document.createElement('li');
+    li.innerHTML = `<input type="checkbox" id="ing-${i}"><label for="ing-${i}">${ing}</label>`;
+    li.querySelector('input').addEventListener('change', (e)=>{
+      li.classList.toggle('checked', e.target.checked);
+    });
+    ingList.appendChild(li);
+  });
+  const stepList = document.getElementById('modalSteps');
+  stepList.innerHTML = '';
+  r.steps.forEach((s,i)=>{
+    const li = document.createElement('li');
+    li.innerHTML = `<div class="step-num">${i+1}</div><div class="step-text">${s}</div>`;
+    stepList.appendChild(li);
+  });
+  switchTab('ing');
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('overlay').classList.remove('open');
+}
+
+function switchTab(tab){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+  document.getElementById('modalIngredients').style.display = tab==='ing' ? 'flex' : 'none';
+  document.getElementById('modalSteps').style.display = tab==='steps' ? 'flex' : 'none';
+}
+
+function downloadRecipe(){
+  const r = recipes[currentRecipe];
+  let text = `${r.title}\nby ${r.author}\n\nCategory: ${r.category} | Time: ${r.time} | Servings: ${r.servings} | Difficulty: ${r.difficulty}\n\n${r.desc}\n\nINGREDIENTS\n`;
+  r.ingredients.forEach(i=> text += `- ${i}\n`);
+  text += `\nSTEPS\n`;
+  r.steps.forEach((s,i)=> text += `${i+1}. ${s}\n`);
+  text += `\n— downloaded from Bite-Sized, a free recipe table.`;
+  const blob = new Blob([text], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = r.title.replace(/[^a-z0-9]+/gi,'-').toLowerCase() + '.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Recipe downloaded 🎉');
+}
+
+function startCookMode(){
+  cookIndex = 0;
+  const r = recipes[currentRecipe];
+  document.getElementById('cookTitle').textContent = r.title;
+  renderCookStep();
+  document.getElementById('cookOverlay').classList.add('open');
+}
+
+function closeCookMode(){
+  document.getElementById('cookOverlay').classList.remove('open');
+}
+
+function renderCookStep(){
+  const r = recipes[currentRecipe];
+  document.getElementById('cookStepNum').textContent = `Step ${cookIndex+1} of ${r.steps.length}`;
+  document.getElementById('cookStepText').textContent = r.steps[cookIndex];
+  document.getElementById('cookProgressBar').style.width = `${((cookIndex+1)/r.steps.length)*100}%`;
+  document.getElementById('cookPrev').disabled = cookIndex === 0;
+  const nextBtn = document.getElementById('cookNext');
+  nextBtn.textContent = cookIndex === r.steps.length - 1 ? 'Finish 🎉' : 'Next →';
+  nextBtn.onclick = cookIndex === r.steps.length - 1
+    ? ()=>{ closeCookMode(); showToast('Bon appétit! 🍽️'); }
+    : ()=> cookNav(1);
+}
+
+function cookNav(dir){
+  const r = recipes[currentRecipe];
+  cookIndex = Math.max(0, Math.min(r.steps.length - 1, cookIndex + dir));
+  renderCookStep();
+}
+
+function addRecipe(e){
+  e.preventDefault();
+  const title = document.getElementById('f-title').value.trim();
+  const author = document.getElementById('f-author').value.trim();
+  const category = document.getElementById('f-category').value;
+  const time = document.getElementById('f-time').value.trim();
+  const difficulty = document.getElementById('f-diff').value;
+  const desc = document.getElementById('f-desc').value.trim();
+  const ingredients = document.getElementById('f-ingredients').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const steps = document.getElementById('f-steps').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const emojiMap = {Breakfast:'🍳', Main:'🍲', Dessert:'🍰', Snack:'🥨', Drink:'🥤'};
+
+  recipes.unshift({
+    title, author, category, emoji: emojiMap[category] || '🍽️',
+    time, servings:'—', difficulty, desc, ingredients, steps
+  });
+
+  document.getElementById('recipeForm').reset();
+  activeCategory = 'All';
+  renderChips();
+  renderGrid();
+  showToast('Your recipe is live! Scroll up to see it 🎉');
+  document.getElementById('recipes').scrollIntoView({behavior:'smooth'});
+  return false;
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=> t.classList.remove('show'), 2200);
+}
+
+document.getElementById('overlay').addEventListener('click', (e)=>{
+  if(e.target.id === 'overlay') closeModal();
+});
+
+renderChips();
+renderGrid();
+</script>
+</body>
+</html>
